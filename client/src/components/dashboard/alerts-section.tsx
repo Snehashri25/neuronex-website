@@ -20,9 +20,10 @@ interface Notification {
 
 export default function AlertsSection() {
   const [preferences, setPreferences] = useState<NotificationPreference[]>([
-    { id: "visual-alerts", name: "Visual Alerts", enabled: true },
-    { id: "sound-alerts", name: "Sound Alerts", enabled: false },
-    { id: "gentle-reminders", name: "Gentle Reminders", enabled: true }
+    { id: "visual-alerts", name: "Visual Sensory Alerts", enabled: true },
+    { id: "auditory-alerts", name: "Auditory Sensory Alerts", enabled: false },
+    { id: "gentle-transitions", name: "Gentle Transition Reminders", enabled: true },
+    { id: "distraction-filters", name: "Distraction Filters", enabled: true }
   ]);
 
   const [notifications, setNotifications] = useState<Notification[]>([
@@ -30,21 +31,21 @@ export default function AlertsSection() {
       id: 1,
       type: "notification",
       iconColor: "text-primary",
-      content: "Task deadline approaching: \"Implement notification system\" due today",
+      content: "Task transition reminder: \"Sensory break\" in 15 minutes before your next meeting",
       time: "10 minutes ago"
     },
     {
       id: 2,
       type: "message",
       iconColor: "text-green-500",
-      content: "New message from Jordan: \"Can we discuss the color palette?\"",
+      content: "New message from Jordan: \"I've prepared visual aids for tomorrow's presentation\"",
       time: "1 hour ago"
     },
     {
       id: 3,
       type: "update",
       iconColor: "text-amber-500",
-      content: "Project \"Website Redesign\" progress updated to 65%",
+      content: "Executive function reminder: Review \"Accessibility Settings\" task breakdown",
       time: "2 hours ago"
     }
   ]);

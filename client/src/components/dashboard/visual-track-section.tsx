@@ -22,11 +22,11 @@ interface Project {
 }
 
 export default function VisualTrackSection() {
-  // Sample projects data - this would come from an API in a real implementation
+  // Sample neurodiverse-focused projects data
   const [projects, setProjects] = useState<Project[]>([
     {
       id: 1,
-      name: "Website Redesign",
+      name: "Sensory-Friendly Interface Development",
       progress: 65,
       status: "On Track",
       statusColor: "green",
@@ -41,7 +41,7 @@ export default function VisualTrackSection() {
     },
     {
       id: 2,
-      name: "Mobile App Development",
+      name: "Executive Function Support Tools",
       progress: 40,
       status: "At Risk",
       statusColor: "yellow",
@@ -55,7 +55,7 @@ export default function VisualTrackSection() {
     },
     {
       id: 3,
-      name: "User Research Study",
+      name: "Neurodiversity User Research Study",
       progress: 90,
       status: "On Track",
       statusColor: "green",

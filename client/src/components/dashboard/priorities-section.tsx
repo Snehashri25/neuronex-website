@@ -15,21 +15,21 @@ export default function PrioritiesSection() {
   const [priorities, setPriorities] = useState<Priority[]>([
     {
       id: 1,
-      task: "Implement notification customization settings",
+      task: "Configure sensory-friendly notification settings",
       details: "High Priority · Due Today",
       isCompleted: false,
       priority: "High"
     },
     {
       id: 2,
-      task: "Review accessibility guidelines for forms",
+      task: "Test color contrast adjustment tools for visual processing needs",
       details: "Medium Priority · Due Today",
       isCompleted: false,
       priority: "Medium"
     },
     {
       id: 3,
-      task: "Team meeting: Project kickoff",
+      task: "Structured team meeting: NeuroNex project phase review",
       details: "High Priority · 2:00 PM",
       isCompleted: false,
       priority: "High"

@@ -20,8 +20,8 @@ export default function LearnModulePreview() {
   const [modules, setModules] = useState<Module[]>([
     {
       id: 1,
-      title: "Project Management Essentials",
-      description: "Learn the fundamentals of effective project management with techniques tailored for neurodivergent individuals.",
+      title: "ADHD-Friendly Project Management",
+      description: "Learn project management techniques designed for activation, focus, and time perception challenges.",
       lessons: 5,
       duration: "45 min",
       progress: 60,
@@ -31,8 +31,8 @@ export default function LearnModulePreview() {
     },
     {
       id: 2,
-      title: "Time Management Strategies",
-      description: "Practical techniques for managing time, deadlines, and prioritization.",
+      title: "Sensory-Friendly Work Environment",
+      description: "Create optimal work environments that accommodate sensory processing differences and reduce overload.",
       lessons: 3,
       duration: "30 min",
       progress: 33,
@@ -41,8 +41,8 @@ export default function LearnModulePreview() {
     },
     {
       id: 3,
-      title: "Visual Task Organization",
-      description: "Methods for visually organizing tasks and information for better processing.",
+      title: "Visual Thinking & Organization",
+      description: "Leverage visual thinking strengths for task organization and information processing.",
       lessons: 4,
       duration: "35 min",
       category: "organization",
@@ -50,8 +50,8 @@ export default function LearnModulePreview() {
     },
     {
       id: 4,
-      title: "Executive Functioning Skills",
-      description: "Techniques to improve planning, working memory, and cognitive flexibility.",
+      title: "Executive Functioning Support Systems",
+      description: "Build external systems to support planning, working memory, and task initiation challenges.",
       lessons: 6,
       duration: "50 min",
       category: "cognitive",

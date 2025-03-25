@@ -30,23 +30,33 @@ export default function CommunityPreview() {
   const [discussions, setDiscussions] = useState<Discussion[]>([
     {
       id: 1,
-      category: "Productivity",
+      category: "ADHD Strategies",
       categoryColor: "blue",
-      title: "What productivity techniques work best for ADHD?",
-      content: "Sharing strategies that help maintain focus and organization throughout the workday.",
+      title: "Body-doubling techniques for remote work focus",
+      content: "What virtual body-doubling strategies have helped you maintain focus during remote work sessions?",
       author: "Jamie",
       replies: 12,
       timeAgo: "3 hours ago"
     },
     {
       id: 2,
-      category: "Design",
+      category: "Sensory Design",
       categoryColor: "purple",
-      title: "Color schemes for sensory-friendly interfaces",
-      content: "Discussing color combinations that work well for users with sensory sensitivities.",
+      title: "UI customization for sensory processing differences",
+      content: "Sharing interface adjustments that reduce visual overwhelm while maintaining usability.",
       author: "Alex",
       replies: 8,
       timeAgo: "Yesterday"
+    },
+    {
+      id: 3,
+      category: "Autism & Work",
+      categoryColor: "green",
+      title: "Managing communication preferences in collaborative projects",
+      content: "How to communicate your communication style needs to teammates without masking.",
+      author: "Taylor",
+      replies: 15,
+      timeAgo: "2 days ago"
     }
   ]);
 
@@ -55,8 +65,8 @@ export default function CommunityPreview() {
       id: 1,
       type: "Event",
       typeColor: "green",
-      title: "Virtual Workshop: Project Management for Neurodiverse Teams",
-      description: "Learn strategies for inclusive project management that accommodates diverse thinking styles.",
+      title: "Workshop: Rejection Sensitive Dysphoria Management",
+      description: "Practical strategies for managing RSD in professional settings with cognitive behavioral techniques.",
       date: "Oct 5, 2023",
       action: "Register Now"
     },
@@ -64,10 +74,19 @@ export default function CommunityPreview() {
       id: 2,
       type: "Guide",
       typeColor: "yellow",
-      title: "Accessibility Resources for Digital Workspaces",
-      description: "A curated collection of tools, plugins, and settings to make digital work environments more accessible.",
+      title: "Accommodations Repository for Neurodivergent Workers",
+      description: "A comprehensive collection of workplace accommodations with implementation guidance for various neurodivergent needs.",
       updated: "2 weeks ago",
       action: "View Resources"
+    },
+    {
+      id: 3,
+      type: "Webinar",
+      typeColor: "blue",
+      title: "Disclosure Strategies: Discussing Neurodivergence at Work",
+      description: "How to navigate disclosure conversations with managers and teammates for better accommodation support.",
+      date: "Oct 12, 2023",
+      action: "Save Your Spot"
     }
   ]);
 

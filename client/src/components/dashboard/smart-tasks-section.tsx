@@ -29,13 +29,13 @@ interface Task {
 export default function SmartTasksSection() {
   const [view, setView] = useState<ViewType>("board");
   
-  // Sample tasks data - this would come from an API in a real implementation
+  // Sample neurodiversity-focused tasks
   const tasks: Task[] = [
     {
       id: 1,
-      title: "Research sensory-friendly design patterns",
-      description: "Collect examples of sensory-friendly design patterns for implementation in our UI.",
-      category: "Research",
+      title: "Design sensory-friendly interface elements",
+      description: "Create UI components with adjustable color contrast and reduced visual stimuli for users with sensory sensitivities.",
+      category: "Design",
       categoryColor: "blue",
       dueDate: "2023-10-15",
       dueText: "Due in 3 days",
@@ -44,9 +44,9 @@ export default function SmartTasksSection() {
     },
     {
       id: 2,
-      title: "Draft user journey for learning module",
-      description: "Create detailed user flow for the personalized learning experience.",
-      category: "Planning",
+      title: "Develop executive functioning support tools",
+      description: "Create task decomposition and time management features for ADHD and autism spectrum users.",
+      category: "Development",
       categoryColor: "purple",
       dueDate: "2023-10-10",
       dueText: "Due tomorrow",
@@ -55,9 +55,9 @@ export default function SmartTasksSection() {
     },
     {
       id: 3,
-      title: "Implement customizable notification system",
-      description: "Create a notification system that can be customized for different sensory needs.",
-      category: "Development",
+      title: "Implement customizable notification settings",
+      description: "Build adjustable notification system with visual, audio, and haptic options for different sensory processing needs.",
+      category: "Accessibility",
       categoryColor: "green",
       dueDate: "2023-10-09",
       dueText: "Due today",
@@ -70,9 +70,9 @@ export default function SmartTasksSection() {
     },
     {
       id: 4,
-      title: "Create visual task tracking components",
-      description: "Design visual components for tracking task progress that are accessible and intuitive.",
-      category: "Design",
+      title: "Implement dyslexia-friendly text display options",
+      description: "Create adjustable text settings with dyslexic-friendly fonts, spacing controls, and reading guides.",
+      category: "Accessibility",
       categoryColor: "indigo",
       dueDate: "2023-10-11",
       dueText: "Due in 2 days",
@@ -81,9 +81,9 @@ export default function SmartTasksSection() {
     },
     {
       id: 5,
-      title: "Set up project repository",
-      description: "Create GitHub repository with proper documentation and structure.",
-      category: "Development",
+      title: "Create stim break timer feature",
+      description: "Develop a customizable timer feature that reminds users to take breaks for self-regulation and sensory needs.",
+      category: "Wellbeing",
       categoryColor: "green",
       dueDate: "2023-10-05",
       dueText: "Completed",
@@ -368,8 +368,8 @@ export default function SmartTasksSection() {
                 </div>
                 <div className="col-span-3 md:col-span-1">
                   <Badge variant={
-                    task.status === "completed" ? "success" :
-                    task.status === "in-progress" ? "warning" : "outline"
+                    task.status === "completed" ? "secondary" :
+                    task.status === "in-progress" ? "outline" : "outline"
                   }>
                     {task.status === "todo" ? "To Do" :
                      task.status === "in-progress" ? "In Progress" : "Completed"}

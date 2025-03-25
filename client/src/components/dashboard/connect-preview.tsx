@@ -32,7 +32,7 @@ export default function ConnectPreview() {
       name: "Michael Johnson",
       status: "online",
       avatar: "/avatars/michael.jpg",
-      lastMessage: "Can we discuss the visual tracking feature?",
+      lastMessage: "Here are some sensory-friendly design patterns I found...",
       time: "10m"
     },
     {
@@ -40,15 +40,15 @@ export default function ConnectPreview() {
       name: "Sarah Williams",
       status: "offline",
       avatar: "/avatars/sarah.jpg",
-      lastMessage: "I've sent you the design assets for review",
+      lastMessage: "I've prepared alternative text descriptions for all our interface elements",
       time: "1h"
     },
     {
       id: 3,
-      name: "Web Team",
+      name: "Neurodiversity Support Group",
       status: "online",
-      initials: "WT",
-      lastMessage: "Weekly standup meeting notes",
+      initials: "ND",
+      lastMessage: "Next peer support session: Thursday at 3 PM",
       time: "2d"
     }
   ]);
@@ -57,19 +57,19 @@ export default function ConnectPreview() {
     {
       id: 1,
       senderId: 1,
-      text: "Hey Alexandra, I'm working on the visual tracking component for the project. Can we discuss some ideas?",
+      text: "Hey Alexandra, I found some research on visual processing preferences across different neurodivergent profiles. Want to discuss implementation?",
       time: "10:42 AM"
     },
     {
       id: 2,
       senderId: 0,
-      text: "Hi Michael! Sure, I've been looking at some visual progress tracking options. What kind of visualization did you have in mind?",
+      text: "Hi Michael! Absolutely, I've been looking into customizable interfaces that adapt to different processing styles. What were your key findings?",
       time: "10:45 AM"
     },
     {
       id: 3,
       senderId: 1,
-      text: "I'm thinking about color-coded progress indicators with clear icons. Something that works well for different processing styles.",
+      text: "The research shows we should offer multiple information display options: visual mapping for big picture thinkers, sequential lists for detail-focused users, and hybrid views to support cognitive flexibility.",
       time: "10:48 AM"
     },
     {
