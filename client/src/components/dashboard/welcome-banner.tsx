@@ -13,12 +13,15 @@ export default function WelcomeBanner({ userName, onDismiss }: WelcomeBannerProp
           Welcome back, {userName}!
         </h2>
         <p className="text-sm text-gray-600 mt-1">
-          You have <span className="font-medium text-primary">5 tasks</span> due today. Let's get started.
+          You have <span className="font-medium text-primary">3 sensory-friendly tasks</span> scheduled today. Your focus environment is ready.
+        </p>
+        <p className="text-xs text-gray-500 mt-1">
+          Today's executive functioning tip: Break tasks into smaller, achievable steps to reduce overwhelm.
         </p>
       </div>
       <div className="flex-shrink-0">
         <Button variant="link" className="text-primary" onClick={onDismiss}>
-          View All Tasks
+          View Tasks
         </Button>
       </div>
     </div>
