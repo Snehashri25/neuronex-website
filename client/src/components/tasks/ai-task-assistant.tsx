@@ -40,6 +40,20 @@ export default function AITaskAssistant({ tasks, onTasksUpdate, onSubtasksCreate
     techniques: string[];
   }>({ suggestions: [], techniques: [] });
 
+  // Helper to get color for different task types
+  const getTaskTypeColor = (type: string | null | undefined) => {
+    if (!type) return 'bg-gray-100 border-gray-300 text-gray-700';
+    
+    const colorMap: Record<string, string> = {
+      'Design': 'bg-blue-100 border-blue-300 text-blue-700',
+      'Development': 'bg-purple-100 border-purple-300 text-purple-700',
+      'Research': 'bg-indigo-100 border-indigo-300 text-indigo-700',
+      'Accessibility': 'bg-green-100 border-green-300 text-green-700',
+      'Wellbeing': 'bg-rose-100 border-rose-300 text-rose-700'
+    };
+    return colorMap[type] || 'bg-gray-100 border-gray-300 text-gray-700';
+  };
+
   const selectedTask = selectedTaskId 
     ? tasks.find(task => task.id === selectedTaskId) 
     : null;
@@ -161,12 +175,37 @@ export default function AITaskAssistant({ tasks, onTasksUpdate, onSubtasksCreate
                   <div 
                     key={task.id}
                     onClick={() => setSelectedTaskId(task.id)}
-                    className={`p-3 border rounded-lg cursor-pointer hover:border-primary transition-colors ${
-                      selectedTaskId === task.id ? 'border-primary bg-primary/5' : ''
+                    className={`p-3 border-2 rounded-lg cursor-pointer transition-all ${
+                      selectedTaskId === task.id 
+                      ? 'border-primary shadow-md' 
+                      : 'border-gray-200 hover:border-blue-300 hover:shadow-sm'
                     }`}
                   >
-                    <h4 className="text-sm font-medium truncate">{task.title}</h4>
-                    <p className="text-xs text-muted-foreground truncate mt-1">{task.description}</p>
+                    <div className="flex items-center justify-between">
+                      <div className={`px-2 py-1 text-xs rounded-md ${getTaskTypeColor(task.category || '')}`}>
+                        {task.category}
+                      </div>
+                      
+                      {task.completed ? (
+                        <span className="flex items-center text-xs font-medium text-green-600">
+                          <span className="material-icons text-xs mr-1">check_circle</span>
+                          Done
+                        </span>
+                      ) : task.status === "in-progress" ? (
+                        <span className="flex items-center text-xs font-medium text-amber-600">
+                          <span className="material-icons text-xs mr-1">autorenew</span>
+                          In Progress
+                        </span>
+                      ) : (
+                        <span className="flex items-center text-xs font-medium text-blue-600">
+                          <span className="material-icons text-xs mr-1">radio_button_unchecked</span>
+                          To Do
+                        </span>
+                      )}
+                    </div>
+                    
+                    <h4 className="text-sm font-medium mt-2 mb-1">{task.title}</h4>
+                    <p className="text-xs text-gray-600 line-clamp-2">{task.description}</p>
                   </div>
                 ))
               )}
@@ -207,7 +246,7 @@ export default function AITaskAssistant({ tasks, onTasksUpdate, onSubtasksCreate
                       <Button 
                         onClick={handleImproveClarity} 
                         disabled={isProcessing}
-                        className="flex items-center"
+                        className="flex items-center bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white shadow-md"
                       >
                         {isProcessing ? (
                           <Loader2 className="h-4 w-4 mr-2 animate-spin" />
@@ -242,9 +281,16 @@ export default function AITaskAssistant({ tasks, onTasksUpdate, onSubtasksCreate
                           <h3 className="text-sm font-medium mb-2">Suggested subtasks:</h3>
                           <div className="space-y-2">
                             {breakdownResult.map((subtask, index) => (
-                              <div key={index} className="p-3 border rounded-lg">
-                                <h4 className="text-sm font-medium">{subtask.title}</h4>
-                                <p className="text-xs text-muted-foreground mt-1">{subtask.description}</p>
+                              <div key={index} className="p-3 border rounded-lg bg-blue-50 border-blue-200 hover:shadow-sm transition-all">
+                                <div className="flex items-center gap-2 mb-1">
+                                  <div className="bg-white w-6 h-6 rounded-full flex items-center justify-center shadow-sm text-blue-600 font-medium text-xs">
+                                    {index + 1}
+                                  </div>
+                                  <h4 className="text-sm font-medium text-blue-800">{subtask.title}</h4>
+                                </div>
+                                <div className="pl-8">
+                                  <p className="text-xs text-blue-700 bg-white p-2 rounded-md border border-blue-100">{subtask.description}</p>
+                                </div>
                               </div>
                             ))}
                           </div>
@@ -283,33 +329,41 @@ export default function AITaskAssistant({ tasks, onTasksUpdate, onSubtasksCreate
                   
                   {timeManagementResult.suggestions.length > 0 ? (
                     <div className="space-y-4">
-                      <Accordion type="single" collapsible>
-                        <AccordionItem value="suggestions">
-                          <AccordionTrigger>
-                            <span className="text-sm font-medium">Personalized Suggestions</span>
-                          </AccordionTrigger>
-                          <AccordionContent>
-                            <ul className="space-y-2 pl-5 list-disc">
-                              {timeManagementResult.suggestions.map((suggestion, idx) => (
-                                <li key={idx} className="text-sm">{suggestion}</li>
-                              ))}
-                            </ul>
-                          </AccordionContent>
-                        </AccordionItem>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                          <h4 className="font-medium text-blue-800 flex items-center mb-3">
+                            <span className="material-icons mr-2 text-blue-600">tips_and_updates</span>
+                            Personal Time Management Suggestions
+                          </h4>
+                          <div className="space-y-3">
+                            {timeManagementResult.suggestions.map((suggestion, idx) => (
+                              <div key={idx} className="bg-white p-3 rounded-md border border-blue-100 flex gap-3 items-start">
+                                <div className="bg-blue-500 text-white w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 font-bold text-xs">
+                                  {idx + 1}
+                                </div>
+                                <p className="text-sm text-blue-900">{suggestion}</p>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
                         
-                        <AccordionItem value="techniques">
-                          <AccordionTrigger>
-                            <span className="text-sm font-medium">Recommended Techniques</span>
-                          </AccordionTrigger>
-                          <AccordionContent>
-                            <ul className="space-y-2 pl-5 list-disc">
-                              {timeManagementResult.techniques.map((technique, idx) => (
-                                <li key={idx} className="text-sm">{technique}</li>
-                              ))}
-                            </ul>
-                          </AccordionContent>
-                        </AccordionItem>
-                      </Accordion>
+                        <div className="bg-green-50 p-4 rounded-lg border border-green-200">
+                          <h4 className="font-medium text-green-800 flex items-center mb-3">
+                            <span className="material-icons mr-2 text-green-600">psychology</span>
+                            Neurodivergent-Friendly Techniques
+                          </h4>
+                          <div className="space-y-3">
+                            {timeManagementResult.techniques.map((technique, idx) => (
+                              <div key={idx} className="bg-white p-3 rounded-md border border-green-100 flex gap-3 items-start">
+                                <div className="bg-green-500 text-white w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0">
+                                  <span className="material-icons text-sm">check</span>
+                                </div>
+                                <p className="text-sm text-green-900">{technique}</p>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   ) : (
                     <Button 
