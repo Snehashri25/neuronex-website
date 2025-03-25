@@ -4,10 +4,89 @@ import { storage } from "./storage";
 import { setupAuth } from "./auth";
 import { z } from "zod";
 import { insertTaskSchema, insertProjectSchema } from "@shared/schema";
+import { 
+  generateTaskPriorities, 
+  generateTimeManagementSuggestions,
+  improveTaskClarity,
+  generateTaskBreakdown 
+} from "./services/openai-service";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Set up authentication routes
   setupAuth(app);
+
+  // AI assistant routes
+  app.post("/api/ai/task-priorities", async (req, res) => {
+    if (!req.isAuthenticated()) return res.status(401).json({ message: "Unauthorized" });
+    
+    try {
+      const { tasks, userContext } = req.body;
+      
+      if (!Array.isArray(tasks) || tasks.length === 0) {
+        return res.status(400).json({ message: "Tasks array is required" });
+      }
+      
+      const priorities = await generateTaskPriorities(tasks, userContext);
+      res.json({ priorities });
+    } catch (error) {
+      console.error("Error generating task priorities:", error);
+      res.status(500).json({ message: "Failed to generate task priorities" });
+    }
+  });
+
+  app.post("/api/ai/time-management", async (req, res) => {
+    if (!req.isAuthenticated()) return res.status(401).json({ message: "Unauthorized" });
+    
+    try {
+      const { tasks, userPreferences } = req.body;
+      
+      if (!Array.isArray(tasks)) {
+        return res.status(400).json({ message: "Tasks array is required" });
+      }
+      
+      const suggestions = await generateTimeManagementSuggestions(tasks, userPreferences);
+      res.json(suggestions);
+    } catch (error) {
+      console.error("Error generating time management suggestions:", error);
+      res.status(500).json({ message: "Failed to generate time management suggestions" });
+    }
+  });
+
+  app.post("/api/ai/improve-task", async (req, res) => {
+    if (!req.isAuthenticated()) return res.status(401).json({ message: "Unauthorized" });
+    
+    try {
+      const { taskDescription } = req.body;
+      
+      if (!taskDescription) {
+        return res.status(400).json({ message: "Task description is required" });
+      }
+      
+      const improvedDescription = await improveTaskClarity(taskDescription);
+      res.json({ improvedDescription });
+    } catch (error) {
+      console.error("Error improving task clarity:", error);
+      res.status(500).json({ message: "Failed to improve task clarity" });
+    }
+  });
+
+  app.post("/api/ai/task-breakdown", async (req, res) => {
+    if (!req.isAuthenticated()) return res.status(401).json({ message: "Unauthorized" });
+    
+    try {
+      const { taskTitle, taskDescription } = req.body;
+      
+      if (!taskTitle || !taskDescription) {
+        return res.status(400).json({ message: "Task title and description are required" });
+      }
+      
+      const subtasks = await generateTaskBreakdown(taskTitle, taskDescription);
+      res.json({ subtasks });
+    } catch (error) {
+      console.error("Error generating task breakdown:", error);
+      res.status(500).json({ message: "Failed to generate task breakdown" });
+    }
+  });
 
   // Task routes
   app.get("/api/tasks", async (req, res) => {
