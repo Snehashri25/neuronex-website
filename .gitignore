@@ -1,6 +1,10 @@
-node_modules
-dist
+node_modules/
+.env
 .DS_Store
-server/public
-vite.config.ts.*
-*.tar.gz
+.vscode/
+dist/
+build/
+*.log
+npm-debug.log*
+.replit
+replit.nix
