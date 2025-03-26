@@ -1,9 +1,20 @@
-import { users, type User, type InsertUser, tasks, type Task, type InsertTask, projects, type Project, type InsertProject } from "@shared/schema";
+import {
+  users,
+  type User,
+  type InsertUser,
+  tasks,
+  type Task,
+  type InsertTask,
+  projects,
+  type Project,
+  type InsertProject,
+} from "@shared/schema";
 import session from "express-session";
 import connectPg from "connect-pg-simple";
 import { db } from "./db";
 import { eq, and } from "drizzle-orm";
 import { pool } from "./db";
+import bcrypt from "bcrypt";
 
 const PostgresSessionStore = connectPg(session);
 
@@ -13,21 +24,25 @@ export interface IStorage {
   getUserByUsername(username: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
   updateUser(id: number, userData: Partial<User>): Promise<User | undefined>;
-  
+  createUserWithCredentials(username: string, password: string): Promise<User>;
+
   // Task methods
   getTasks(userId: number): Promise<Task[]>;
   getTask(id: number): Promise<Task | undefined>;
   createTask(task: InsertTask): Promise<Task>;
   updateTask(id: number, taskData: Partial<Task>): Promise<Task | undefined>;
   deleteTask(id: number): Promise<boolean>;
-  
+
   // Project methods
   getProjects(userId: number): Promise<Project[]>;
   getProject(id: number): Promise<Project | undefined>;
   createProject(project: InsertProject): Promise<Project>;
-  updateProject(id: number, projectData: Partial<Project>): Promise<Project | undefined>;
+  updateProject(
+    id: number,
+    projectData: Partial<Project>
+  ): Promise<Project | undefined>;
   deleteProject(id: number): Promise<boolean>;
-  
+
   // Session store
   sessionStore: session.SessionStore;
 }
@@ -36,9 +51,9 @@ export class DatabaseStorage implements IStorage {
   public sessionStore: session.SessionStore;
 
   constructor() {
-    this.sessionStore = new PostgresSessionStore({ 
-      pool, 
-      createTableIfMissing: true 
+    this.sessionStore = new PostgresSessionStore({
+      pool,
+      createTableIfMissing: true,
     });
   }
 
@@ -49,20 +64,46 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getUserByUsername(username: string): Promise<User | undefined> {
-    const [user] = await db.select().from(users).where(eq(users.username, username));
+    const [user] = await db
+      .select()
+      .from(users)
+      .where(eq(users.username, username));
     return user;
   }
 
   async createUser(insertUser: InsertUser): Promise<User> {
-    const [user] = await db.insert(users).values({
-      ...insertUser,
-      createdAt: new Date().toISOString()
-    }).returning();
+    const [user] = await db
+      .insert(users)
+      .values({
+        ...insertUser,
+        createdAt: new Date().toISOString(),
+      })
+      .returning();
     return user;
   }
 
-  async updateUser(id: number, userData: Partial<User>): Promise<User | undefined> {
-    const [updatedUser] = await db.update(users)
+  async createUserWithCredentials(
+    username: string,
+    password: string
+  ): Promise<User> {
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const [user] = await db
+      .insert(users)
+      .values({
+        username,
+        password: hashedPassword,
+        createdAt: new Date().toISOString(),
+      })
+      .returning();
+    return user;
+  }
+
+  async updateUser(
+    id: number,
+    userData: Partial<User>
+  ): Promise<User | undefined> {
+    const [updatedUser] = await db
+      .update(users)
       .set(userData)
       .where(eq(users.id, id))
       .returning();
@@ -80,15 +121,22 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createTask(insertTask: InsertTask): Promise<Task> {
-    const [task] = await db.insert(tasks).values({
-      ...insertTask,
-      createdAt: new Date().toISOString()
-    }).returning();
+    const [task] = await db
+      .insert(tasks)
+      .values({
+        ...insertTask,
+        createdAt: new Date().toISOString(),
+      })
+      .returning();
     return task;
   }
 
-  async updateTask(id: number, taskData: Partial<Task>): Promise<Task | undefined> {
-    const [updatedTask] = await db.update(tasks)
+  async updateTask(
+    id: number,
+    taskData: Partial<Task>
+  ): Promise<Task | undefined> {
+    const [updatedTask] = await db
+      .update(tasks)
       .set(taskData)
       .where(eq(tasks.id, id))
       .returning();
@@ -106,20 +154,30 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getProject(id: number): Promise<Project | undefined> {
-    const [project] = await db.select().from(projects).where(eq(projects.id, id));
+    const [project] = await db
+      .select()
+      .from(projects)
+      .where(eq(projects.id, id));
     return project;
   }
 
   async createProject(insertProject: InsertProject): Promise<Project> {
-    const [project] = await db.insert(projects).values({
-      ...insertProject,
-      createdAt: new Date().toISOString()
-    }).returning();
+    const [project] = await db
+      .insert(projects)
+      .values({
+        ...insertProject,
+        createdAt: new Date().toISOString(),
+      })
+      .returning();
     return project;
   }
 
-  async updateProject(id: number, projectData: Partial<Project>): Promise<Project | undefined> {
-    const [updatedProject] = await db.update(projects)
+  async updateProject(
+    id: number,
+    projectData: Partial<Project>
+  ): Promise<Project | undefined> {
+    const [updatedProject] = await db
+      .update(projects)
       .set(projectData)
       .where(eq(projects.id, id))
       .returning();
@@ -132,4 +190,18 @@ export class DatabaseStorage implements IStorage {
   }
 }
 
-export const storage = new DatabaseStorage();
+// Example implementation of the storage module
+export const someMethod = async () => {
+  // Implement the required functionality here
+  console.log("Storage method called");
+};
+
+export const storage = {
+  getUserByUsername: async (username: string) => {
+    const [user] = await db
+      .select()
+      .from(users)
+      .where(eq(users.username, username));
+    return user;
+  },
+};

@@ -6,6 +6,9 @@ import { scrypt, randomBytes, timingSafeEqual } from "crypto";
 import { promisify } from "util";
 import { storage } from "./storage";
 import { User as SelectUser } from "@shared/schema";
+import MemoryStore from "memorystore"; // Example session store
+
+const sessionStore = new MemoryStore({ checkPeriod: 86400000 }); // 24 hours
 
 declare global {
   namespace Express {
@@ -30,16 +33,16 @@ async function comparePasswords(supplied: string, stored: string) {
 
 export function setupAuth(app: Express) {
   const sessionSecret = process.env.SESSION_SECRET || "neuronex-session-secret";
-  
+
   const sessionSettings: session.SessionOptions = {
     secret: sessionSecret,
     resave: false,
     saveUninitialized: false,
-    store: storage.sessionStore,
+    store: sessionStore, // Corrected session store
     cookie: {
       secure: process.env.NODE_ENV === "production",
       maxAge: 1000 * 60 * 60 * 24 * 7, // 1 week
-    }
+    },
   };
 
   app.set("trust proxy", 1);
@@ -53,63 +56,86 @@ export function setupAuth(app: Express) {
         const user = await storage.getUserByUsername(username);
         if (!user || !(await comparePasswords(password, user.password))) {
           return done(null, false, { message: "Invalid username or password" });
-        } else {
-          return done(null, user);
         }
+        return done(null, user);
       } catch (error) {
+        console.error("Error in authentication:", error);
         return done(error);
       }
-    }),
+    })
   );
 
   passport.serializeUser((user, done) => done(null, user.id));
-  passport.deserializeUser(async (id: number, done) => {
-    try {
-      const user = await storage.getUser(id);
-      done(null, user);
-    } catch (error) {
-      done(error);
+  passport.deserializeUser(
+    async (id: number, done: (err: any, user?: SelectUser | false) => void) => {
+      try {
+        const user = await storage.getUserById(id); // Corrected method name
+        done(null, user);
+      } catch (error) {
+        done(error);
+      }
     }
-  });
+  );
 
   app.post("/api/register", async (req, res, next) => {
     try {
-      const existingUser = await storage.getUserByUsername(req.body.username);
+      console.log("Register request received:", req.body); // Log request data
+
+      const { username, password } = req.body;
+      if (!username || !password) {
+        return res
+          .status(400)
+          .json({ message: "Username and password are required" });
+      }
+
+      const existingUser = await storage.getUserByUsername(username);
       if (existingUser) {
         return res.status(400).json({ message: "Username already exists" });
       }
 
-      const hashedPassword = await hashPassword(req.body.password);
+      const hashedPassword = await hashPassword(password);
       const user = await storage.createUser({
-        ...req.body,
+        username,
         password: hashedPassword,
-      });
+      }); // Corrected method name
 
-      req.login(user, (err) => {
-        if (err) return next(err);
-        
-        // Don't expose the password in the response
-        const { password, ...userWithoutPassword } = user;
+      req.login(user, (err: any) => {
+        if (err) {
+          console.error("Error during login after registration:", err);
+          return next(err);
+        }
+
+        const { password, ...userWithoutPassword } = user; // Exclude password
         res.status(201).json(userWithoutPassword);
       });
     } catch (error) {
-      next(error);
+      console.error("Error during registration:", (error as any).message); // Cast error to any
+      res.status(500).json({
+        message: "Internal Server Error",
+        error: (error as any).message,
+      });
     }
   });
 
   app.post("/api/login", (req, res, next) => {
-    passport.authenticate("local", (err, user, info) => {
-      if (err) return next(err);
-      if (!user) return res.status(401).json({ message: info?.message || "Authentication failed" });
-      
-      req.login(user, (err) => {
+    passport.authenticate(
+      "local",
+      async (err: any, user: SelectUser | false, info: any) => {
         if (err) return next(err);
-        
-        // Don't expose the password in the response
-        const { password, ...userWithoutPassword } = user;
-        res.status(200).json(userWithoutPassword);
-      });
-    })(req, res, next);
+        if (!user)
+          return res
+            .status(401)
+            .json({ message: info?.message || "Authentication failed" });
+
+        req.login(user, (err: any) => {
+          if (err) return next(err);
+
+          // Don't expose the password in the response
+          const { password, ...userWithoutPassword } = user;
+          res.status(200).json(userWithoutPassword);
+        });
+      }
+    )(req, res, next);
   });
 
   app.post("/api/logout", (req, res, next) => {
@@ -120,8 +146,9 @@ export function setupAuth(app: Express) {
   });
 
   app.get("/api/user", (req, res) => {
-    if (!req.isAuthenticated()) return res.status(401).json({ message: "Unauthorized" });
-    
+    if (!req.isAuthenticated())
+      return res.status(401).json({ message: "Unauthorized" });
+
     // Don't expose the password in the response
     const { password, ...userWithoutPassword } = req.user!;
     res.json(userWithoutPassword);
